@@ -1,0 +1,77 @@
+global:
+  namespace: portfolio-prod
+  environment: production
+
+backend:
+  replicaCount: 2
+
+  image:
+    repository: docker.io/sajit21/portfolio-backend
+    tag: "d5b67c4"
+    pullPolicy: IfNotPresent
+
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: 500m
+      memory: 256Mi
+
+  probes:
+    liveness:
+      path: /healthz
+      initialDelaySeconds: 15
+      periodSeconds: 10
+
+    readiness:
+      path: /ready
+      initialDelaySeconds: 5
+      periodSeconds: 5
+
+  podSecurityContext:
+    runAsNonRoot: true
+    runAsUser: 10001
+
+  service:
+    type: ClusterIP
+    port: 3000
+
+  envFromSecret: "portfolio-backend-secrets"
+
+
+frontend:
+  replicaCount: 2
+
+  image:
+    repository: docker.io/sajit21/portfolio-frontend
+    tag: "d5b67c4"
+    pullPolicy: IfNotPresent
+
+  resources:
+    requests:
+      cpu: 50m
+      memory: 64Mi
+    limits:
+      cpu: 250m
+      memory: 128Mi
+
+  probes:
+    liveness:
+      path: /
+      initialDelaySeconds: 10
+      periodSeconds: 10
+
+    readiness:
+      path: /
+      initialDelaySeconds: 5
+      periodSeconds: 5
+
+  service:
+    type: ClusterIP
+    port: 80
+
+
+podDisruptionBudget:
+  enabled: true
+  minAvailable: 1

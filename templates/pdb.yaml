@@ -1,0 +1,33 @@
+{{- if .Values.podDisruptionBudget.enabled }}
+
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+
+metadata:
+  name: portfolio-backend-pdb
+  namespace: {{ .Values.global.namespace }}
+
+spec:
+  minAvailable: {{ .Values.podDisruptionBudget.minAvailable }}
+
+  selector:
+    matchLabels:
+      app: portfolio-backend
+
+---
+
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+
+metadata:
+  name: portfolio-frontend-pdb
+  namespace: {{ .Values.global.namespace }}
+
+spec:
+  minAvailable: {{ .Values.podDisruptionBudget.minAvailable }}
+
+  selector:
+    matchLabels:
+      app: portfolio-frontend
+
+{{- end }}
