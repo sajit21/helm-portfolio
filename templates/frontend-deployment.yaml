@@ -21,6 +21,7 @@ spec:
         {{- include "portfolio.labels" . | nindent 8 }}
 
     spec:
+      serviceAccountName: portfolio-frontend
       containers:
         - name: frontend
 
